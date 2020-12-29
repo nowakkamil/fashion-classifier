@@ -121,7 +121,7 @@ fashion_train_dropout = cnn_fashion_model.fit(
     validation_data=(valid_X, valid_label))
 
 # Save model
-cnn_fashion_model.save("artifacts/fashion_classifier.h5py")
+cnn_fashion_model.save("artifacts/model_fashion_classifier.h5py")
 
 # Estimate performance
 model_evaluation = cnn_fashion_model.evaluate(
