@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "c4da8602-697c-4dce-9726-0eebcf82e54d",
+		"name": "FashionClassifier",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Expected result: 3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": \"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAABaklEQVR4nG3SQWcDQRQA4GUJISzLssxhWJZhGYbhHYZhGIYlDHNYQlhCCKWHEkJYQin9CaWU0EMpoYRSSg695lT6B/I32rTpJTv7LjN83rx5byYIThEGaXlaQ4uCVoTBwBR/OyrjNh5Z8N8UzMG3IBBE5mHKMh/DoKczJATDqRv4iUmV5YTnKK56PsYTAAqc8XFXzUsrKAAf2i6srWSUM6m60JVAKSu07EKlgFBGy84+pdT0GJJ0WGiMoIXmBe9AkE4JXqlcpj5avACVN5aA8Cwa0jsG2b0tROkhNmydK/ToCvCHq7XcII03lmjr3beC4Utu8G5EjPWKzsC+Zgbvaywq08aGundU4sMoFq49+n6T12/IocNFJN2ohegazT6yEu+uIlNN+udIV8l8m5Xpfh6pum79P9Uki6cjfi5jMRu3elGLweqBlOhrPoDllJ7jdIvWz2SUfm8SeztvPUzmomZGXHGjoxT0/7E/TvFWGnshkUIAAAAASUVORK5CYII=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Expected result: 9",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": \"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAABVklEQVR4nGNgGNaAmZGBgZ1BFV2YkYlBOoQbwi7HkGRgiOjPA7HEYrPQJVkYTBsrJq+fu6x91ooeNDkmBu7OpoYFG+Yv3zR1+gQk85gYGZgZGIqLsjpXzJyzdHn/3HnccKtAjmRgiOyOips5tXn6yjX981cawA1kASlI6sjLzVvUPmHq/OUT5q0EO5eJCegDIJDKKU3OL+2Y0zZr1pwFvZPnbAIbBgKipjGl+enFjW39s5aumjV9Vn/XtKXaQHFxM0ef0LKG6vzCsvra7taOBT2zF06YvWbhXjsGBpe4qPyi/KLi+vaO/rp6oJ4ptYsWTeiaueiIFYPbysaMpJS4xKS0nKzyisapc5bv23fk2LHdR/fuUGEQqFu9Z8+O1TPbK+rqJ+08fPHC/4sbv/75/fv7nXOGIMfwOGct2Xn80uVLF/ZNC+IACmy6sGf9onnTuYmJwsEDAOgDgrGMIL5NAAAAAElFTkSuQmCC\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
