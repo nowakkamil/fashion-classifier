@@ -1,0 +1,77 @@
+.input-file {
+  opacity: 0;
+  display: block;
+  margin: 0 auto;
+}
+label {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+.upload {
+  width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid black;
+}
+
+.upload ol {
+  padding-left: 0;
+}
+
+.upload li,
+div > p {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  list-style-type: none;
+}
+
+.upload img {
+  height: 64px;
+  order: 1;
+}
+
+.upload p {
+  line-height: 32px;
+  padding-left: 10px;
+  text-align: center;
+}
+
+.upload label,
+.upload button {
+  background-color: #7f9ccb;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px ridge black;
+  font-size: 0.8rem;
+  height: auto;
+}
+
+.upload label:hover,
+.upload button:hover {
+  background-color: #2d5ba3;
+  color: white;
+}
+
+.upload label:active,
+.upload button:active {
+  background-color: #0d3f8f;
+  color: white;
+}
+
+.preview-archieve,
+.preview-image {
+}
+
+li > img {
+  height: 100%;
+  width: 20%;
+}
+li > p {
+  display: block;
+  width: 80%;
+  height: 100%;
+  font-size: 14px;
+  margin: auto auto;
+}
