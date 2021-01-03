@@ -4,6 +4,7 @@ import "./Form.css";
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import Answer from "./Answer";
+import LastResult from "./LastResult";
 import Image from "image-js";
 const postAddress = "http://127.0.0.1:5000/";
 
@@ -31,6 +32,7 @@ class Form extends Component {
       isLoading: false,
       showAnswer: false,
       responses: new Map(),
+      lastResult: [],
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.archieveSelectedHandler = this.archieveSelectedHandler.bind(this);
@@ -41,11 +43,8 @@ class Form extends Component {
 
   handleButtonClick = async () => {
     this.setState({ isLoading: true });
-    for (let archieve of this.state.archieves) {
-      this.extractFile(archieve);
-    }
-    let responsesFromServer = new Map();
 
+    let responsesFromServer = new Map();
     for (let file of this.state.converted) {
       await axios
         .post(postAddress, {
@@ -53,7 +52,6 @@ class Form extends Component {
         })
         .then(
           (response) => {
-            //console.log(response.data.result);
             responsesFromServer.set(file.name, response.data.result);
           },
           (error) => {
@@ -61,42 +59,43 @@ class Form extends Component {
           }
         );
     }
-
-    console.log("CONVERTED");
-    console.log(this.state.converted);
-    console.log(responsesFromServer);
+    let last = this.state.converted[this.state.converted.length - 1];
+    let img = this.state.images.filter((e) => e[0].name === last.name);
+    if (img.length > 0) {
+      let lastRes = [img[0][0], responsesFromServer.get(last.name)];
+      this.setState({ lastResult: lastRes });
+    }
     this.setState({ respones: responsesFromServer });
     this.togglePopup();
     this.setState({ isLoading: false });
   };
+
   togglePopup() {
     this.setState({
       showPopup: !this.state.showPopup,
     });
   }
+
   validImageType(file) {
     return this.state.imageTypes.includes(file.type);
   }
+
   validArchieveImageType(filename) {
     return this.state.imageTypes.includes("image/" + filename.split(".")[1]);
   }
+
   validArchieveType(file) {
-    console.log(file.type);
     return this.state.archieveTypes.includes(file.type);
   }
 
   extractFile(file) {
     const new_zip = require("jszip")();
-    new_zip.loadAsync(file).then(async (zip) => {
+    new_zip.loadAsync(file).then((zip) => {
       for (let i in zip.files) {
         zip.files[i].async("base64").then(
           (content) => {
             if (this.validArchieveImageType(i)) {
-              let model = {
-                name: i,
-                encoded: content,
-              };
-              this.state.converted.push(model);
+              this.appendEncodedImage(content, i);
             }
           },
           (e) => {
@@ -105,6 +104,20 @@ class Form extends Component {
         );
       }
     });
+    console.log(this.state.converted);
+  }
+
+  createNodeForArchieve(file) {
+    const listItem = document.createElement("li");
+    const para = document.createElement("p");
+    if (this.validArchieveType(file)) {
+      para.textContent = `File name ${file.name}`;
+      listItem.appendChild(para);
+    } else {
+      para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+      listItem.appendChild(para);
+    }
+    return listItem;
   }
 
   archieveSelectedHandler = async (event) => {
@@ -122,22 +135,18 @@ class Form extends Component {
       const list = document.createElement("ol");
       preview.appendChild(list);
       for (const file of curFiles) {
-        const listItem = document.createElement("li");
-        const para = document.createElement("p");
-        if (this.validArchieveType(file)) {
-          para.textContent = `File name ${file.name}`;
-          listItem.appendChild(para);
-        } else {
-          para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-          listItem.appendChild(para);
-        }
-        list.appendChild(listItem);
+        list.appendChild(this.createNodeForArchieve(file));
       }
       this.setState({
         archieves: event.target.files,
       });
     }
+
+    for (let archieve of event.target.files) {
+      this.extractFile(archieve);
+    }
   };
+
   execute(files) {
     let greyImages = [];
     for (let file of files) {
@@ -154,6 +163,23 @@ class Form extends Component {
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
+
+  createNodeForImage(file) {
+    const listItem = document.createElement("li");
+    const para = document.createElement("p");
+    if (this.validImageType(file)) {
+      para.textContent = `File name ${file.name}`;
+      const image = document.createElement("img");
+      image.src = URL.createObjectURL(file);
+
+      listItem.appendChild(image);
+      listItem.appendChild(para);
+    } else {
+      para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+      listItem.appendChild(para);
+    }
+    return listItem;
+  }
 
   imageSelectedHandler = async (event) => {
     const preview = document.querySelector(".preview-image");
@@ -182,41 +208,32 @@ class Form extends Component {
       preview.appendChild(list);
 
       for (const file of curFiles) {
-        const listItem = document.createElement("li");
-        const para = document.createElement("p");
-        if (this.validImageType(file)) {
-          para.textContent = `File name ${file.name}`;
-          const image = document.createElement("img");
-          image.src = URL.createObjectURL(file);
-
-          listItem.appendChild(image);
-          listItem.appendChild(para);
-        } else {
-          para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-          listItem.appendChild(para);
-        }
-        list.appendChild(listItem);
+        list.appendChild(this.createNodeForImage(file));
       }
     }
     this.state.images.push(event.target.files);
 
     for (let f of event.target.files) {
       let base = await this.convertToBase64(f);
-      base = base.split(",")[1];
-      let model = {
-        name: f.name,
-        encoded: base,
-      };
-      this.state.converted.push(model);
+      this.appendEncodedImage(base, f.name);
     }
   };
+
+  appendEncodedImage(base, filename) {
+    if (base.indexOf(",") !== -1) base = base.split(",")[1];
+    let model = {
+      name: filename,
+      encoded: base,
+    };
+    this.state.converted.push(model);
+  }
 
   render() {
     return (
       <>
         <div className="upload">
           <div>
-            <label for="archieve_uploads">Choose archieves to upload</label>
+            <label htmlFor="archieve_uploads">Choose archieves to upload</label>
             <input
               className="input-file input-archieve"
               type="file"
@@ -233,7 +250,7 @@ class Form extends Component {
         </div>
         <div className="upload">
           <div>
-            <label for="image_uploads">
+            <label htmlFor="image_uploads">
               Choose images to upload (PNG, JPG)
             </label>
             <input
@@ -246,7 +263,7 @@ class Form extends Component {
               multiple
             />
           </div>
-          <div class="preview-image">
+          <div className="preview-image">
             <p>No files currently selected for upload</p>
           </div>
         </div>
@@ -262,6 +279,7 @@ class Form extends Component {
             responses={this.state.respones}
           />
         ) : null}
+        <LastResult result={this.state.lastResult} />
       </>
     );
   }
