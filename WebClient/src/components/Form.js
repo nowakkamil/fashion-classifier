@@ -31,7 +31,7 @@ class Form extends Component {
       archieveTypes: ["application/x-zip-compressed"],
       isLoading: false,
       showAnswer: false,
-      responses: new Map(),
+      responses: [],
       lastResult: [],
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
@@ -44,7 +44,7 @@ class Form extends Component {
   handleButtonClick = async () => {
     this.setState({ isLoading: true });
 
-    let responsesFromServer = new Map();
+    let responsesFromServer = [];
     for (let file of this.state.converted) {
       await axios
         .post(postAddress, {
@@ -52,7 +52,12 @@ class Form extends Component {
         })
         .then(
           (response) => {
-            responsesFromServer.set(file.name, response.data.result);
+            let model = {
+              name: file.name,
+              result: response.data.result,
+              encoded: file.encoded,
+            };
+            responsesFromServer.push(model);
           },
           (error) => {
             console.log(error);
@@ -61,8 +66,12 @@ class Form extends Component {
     }
     let last = this.state.converted[this.state.converted.length - 1];
     let img = this.state.images.filter((e) => e[0].name === last.name);
+
     if (img.length > 0) {
-      let lastRes = [img[0][0], responsesFromServer.get(last.name)];
+      let lastRes = [
+        img[0][0],
+        responsesFromServer.filter((e) => e.name === last.name)[0],
+      ];
       this.setState({ lastResult: lastRes });
     }
     this.setState({ respones: responsesFromServer });
@@ -104,7 +113,6 @@ class Form extends Component {
         );
       }
     });
-    console.log(this.state.converted);
   }
 
   createNodeForArchieve(file) {
@@ -147,23 +155,6 @@ class Form extends Component {
     }
   };
 
-  execute(files) {
-    let greyImages = [];
-    for (let file of files) {
-      let image = Image.file(file);
-      greyImages.push(image.grey()); // convert the image to greyscale.
-      // .resize({ width: 200 }); // resize the image, forcing a width of 200 pixels. The height is computed automatically to preserve the aspect ratio.
-    }
-    return greyImages;
-  }
-  convertToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
   createNodeForImage(file) {
     const listItem = document.createElement("li");
     const para = document.createElement("p");
@@ -187,16 +178,7 @@ class Form extends Component {
     while (preview.firstChild) {
       preview.removeChild(preview.firstChild);
     }
-    /*let imageFiles = [];
-    for (let f of event.target.files) {
-      let base = await this.convertToBase64(f);
-      let img = new Image();
-      console.log(base);
-      img.src = base;
-      imageFiles.push(img);
-    }
-    console.log("A");
-    console.log(imageFiles);*/
+
     const curFiles = event.target.files;
 
     if (curFiles.length === 0) {
@@ -218,6 +200,23 @@ class Form extends Component {
       this.appendEncodedImage(base, f.name);
     }
   };
+  makeGray(img) {
+    for (var pixel of img.values()) {
+      var avg = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
+      pixel.setRed(avg);
+      pixel.setGreen(avg);
+      pixel.setBlue(avg);
+    }
+    return img;
+  }
+  transformImage(base) {
+    var img = new Image();
+    img.src = "";
+    img.width = "28";
+    img.height = "28";
+    console.log(img);
+    return this.convertToBase64(img);
+  }
 
   appendEncodedImage(base, filename) {
     if (base.indexOf(",") !== -1) base = base.split(",")[1];
@@ -227,13 +226,20 @@ class Form extends Component {
     };
     this.state.converted.push(model);
   }
+  convertToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
 
   render() {
     return (
       <>
         <div className="upload">
           <div>
-            <label htmlFor="archieve_uploads">Choose archieves to upload</label>
+            <label htmlFor="archieve_uploads">Choose archives to upload</label>
             <input
               className="input-file input-archieve"
               type="file"
@@ -245,7 +251,7 @@ class Form extends Component {
             />
           </div>
           <div className="preview-archieve">
-            <p>No archieves currently selected for upload</p>
+            <p>No archives currently selected for upload</p>
           </div>
         </div>
         <div className="upload">

@@ -11,10 +11,11 @@ class Answer extends Component {
       <div className="answer">
         <div className="answer-inner">
           <ul>
-            {responses.forEach((value, key) => {
+            {responses.map((value, key) => {
               return (
                 <li>
-                  {key} {value}
+                  {value.name} &nbsp;
+                  {value.result}
                 </li>
               );
             })}
