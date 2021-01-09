@@ -1,15 +1,27 @@
-import './App.css';
-import { Upload, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import "./App.css";
+import React from "react";
+
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Start from "./components/Start";
+
+import NavBar from "./components/NavBar";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#1e90ff",
+    },
+  },
+});
 
 function App() {
   return (
-    <Upload
-      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-      listType="picture"
-    >
-      <Button icon={<UploadOutlined />}>Upload</Button>
-    </Upload>
+    <MuiThemeProvider theme={theme}>
+      <NavBar />
+      <div className="start">
+        <Start />
+      </div>
+    </MuiThemeProvider>
   );
 }
 

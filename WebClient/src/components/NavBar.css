@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;700&display=swap");
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  background: #202020;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.nav-bar {
+  width: 7%;
+  height: 7%;
+  min-width: 40px;
+  max-width: 100px;
+  border-radius: 50%;
+  margin: 17px 15px 17px 24px;
+}
+.nav-bar-text {
+  color: white;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: calc(6px + 2vmin);
+  font-weight: 300;
+  margin-left: 1%;
+  white-space: nowrap;
+}
+.app-header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #202020;
+  align-items: center;
+}
+.hexagon {
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 88%;
+  opacity: 15%;
+}
+.hexagon-wrapper {
+  position: relative;
+  height: auto;
+  width: 120%;
+  background: transparent;
+  overflow: hidden;
+}
+.wrapper {
+  display: flex;
+  border-bottom: 1px solid #424242;
+  overflow: hidden;
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+.last-item {
+  margin-left: auto;
+}
+.last-item::before {
+  content: "";
+  display: block;
+  width: 60vw;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  z-index: 10000;
+  background: linear-gradient(
+    90deg,
+    rgba(32, 32, 32, 1) 36%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}

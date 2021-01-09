@@ -7,3 +7,110 @@
 .upload-list-inline [class*="-upload-list-rtl"] .ant-upload-list-item {
   float: right;
 }
+.start {
+  clear: left;
+}
+
+.button {
+  margin: 10px !important;
+}
+
+.buttton-wrapper {
+  padding: 12px;
+  justify-content: center;
+  display: flex;
+}
+.intro {
+  background-color: #202020;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding-top: 7%;
+  padding-bottom: 7%;
+}
+
+.intro-text {
+  font-size: calc(6px + 2vmin);
+}
+
+.form-title {
+  font-size: 26px;
+  padding-bottom: 7px;
+}
+
+.form .row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.form .column {
+  flex: 1 1 10%;
+}
+
+.form .label {
+  text-align: end;
+  padding-top: 5px;
+  padding-right: 16px;
+}
+
+.form .input {
+  padding: 6px;
+  background: transparent;
+  border: 1px solid #424242;
+  border-radius: 4px;
+  color: white;
+  flex-grow: 2;
+  min-height: 30px;
+  font-size: 0.86em;
+  width: 100%;
+}
+
+.form .option {
+  color: black;
+}
+
+.form .submit {
+  display: block;
+  margin: 0 auto;
+}
+
+.switch-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  position: fixed;
+  bottom: 0;
+  left: 50vw;
+  width: 100vw;
+  background: #202020;
+  transform: translateX(-50vw);
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 7px;
+}
+
+.switch-container span {
+  margin: 4%;
+}
+
+.switcher-text {
+  margin: 3px 0;
+  margin-left: -3px;
+  text-align: center;
+}
+.upload-button {
+  margin: 15px;
+}
