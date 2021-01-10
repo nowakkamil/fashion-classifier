@@ -5,16 +5,14 @@ import axios from "axios";
 import Loader from "react-loader-spinner";
 import Answer from "./Answer";
 import LastResult from "./LastResult";
-import Image from "image-js";
+import jsZip from "jszip";
 const postAddress = "http://127.0.0.1:5000/";
 
 class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "Choose files",
-      images: [],
-      archieves: [],
+      archives: [],
       converted: [],
       imageTypes: [
         "image/apng",
@@ -28,15 +26,28 @@ class Form extends Component {
         "image/webp",
         "image/x-icon",
       ],
-      archieveTypes: ["application/x-zip-compressed"],
+      resultType: [
+        "T-shirt/top",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Ankle boot",
+      ],
+      archiveTypes: ["application/x-zip-compressed"],
       isLoading: false,
       showAnswer: false,
       responses: [],
-      lastResult: [],
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
-    this.archieveSelectedHandler = this.archieveSelectedHandler.bind(this);
+    this.archiveSelectedHandler = this.archiveSelectedHandler.bind(this);
     this.imageSelectedHandler = this.imageSelectedHandler.bind(this);
+    this.clearArchives = this.clearArchives.bind(this);
+    this.clearImages = this.clearImages.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.popup = React.createRef();
   }
@@ -48,13 +59,13 @@ class Form extends Component {
     for (let file of this.state.converted) {
       await axios
         .post(postAddress, {
-          data: file.encoded,
+          data: this.removeHeader(file.encoded),
         })
         .then(
           (response) => {
             let model = {
               name: file.name,
-              result: response.data.result,
+              result: this.state.resultType[response.data.result],
               encoded: file.encoded,
             };
             responsesFromServer.push(model);
@@ -64,20 +75,14 @@ class Form extends Component {
           }
         );
     }
-    let last = this.state.converted[this.state.converted.length - 1];
-    let img = this.state.images.filter((e) => e[0].name === last.name);
-
-    if (img.length > 0) {
-      let lastRes = [
-        img[0][0],
-        responsesFromServer.filter((e) => e.name === last.name)[0],
-      ];
-      this.setState({ lastResult: lastRes });
-    }
-    this.setState({ respones: responsesFromServer });
+    this.setState({ responses: responsesFromServer });
     this.togglePopup();
-    this.setState({ isLoading: false });
+    this.setState({ isLoading: false, images: [], converted: [] });
   };
+
+  removeHeader(base) {
+    return base.split(",")[1];
+  }
 
   togglePopup() {
     this.setState({
@@ -89,22 +94,26 @@ class Form extends Component {
     return this.state.imageTypes.includes(file.type);
   }
 
-  validArchieveImageType(filename) {
+  validArchiveImageType(filename) {
     return this.state.imageTypes.includes("image/" + filename.split(".")[1]);
   }
 
-  validArchieveType(file) {
-    return this.state.archieveTypes.includes(file.type);
+  validArchiveType(file) {
+    return this.state.archiveTypes.includes(file.type);
   }
 
   extractFile(file) {
-    const new_zip = require("jszip")();
-    new_zip.loadAsync(file).then((zip) => {
+    jsZip.loadAsync(file).then((zip) => {
       for (let i in zip.files) {
         zip.files[i].async("base64").then(
           (content) => {
-            if (this.validArchieveImageType(i)) {
-              this.appendEncodedImage(content, i);
+            if (this.validArchiveImageType(i)) {
+              content =
+                "data:image/" +
+                zip.files[i].name.split(".")[1] +
+                ";base64," +
+                content;
+              this.appendEncodedImage(content, i, true);
             }
           },
           (e) => {
@@ -115,10 +124,10 @@ class Form extends Component {
     });
   }
 
-  createNodeForArchieve(file) {
+  createNodeForArchive(file) {
     const listItem = document.createElement("li");
     const para = document.createElement("p");
-    if (this.validArchieveType(file)) {
+    if (this.validArchiveType(file)) {
       para.textContent = `File name ${file.name}`;
       listItem.appendChild(para);
     } else {
@@ -128,8 +137,10 @@ class Form extends Component {
     return listItem;
   }
 
-  archieveSelectedHandler = async (event) => {
-    const preview = document.querySelector(".preview-archieve");
+  archiveSelectedHandler = async (event) => {
+    let conv = this.state.converted.filter((e) => !e.isZipped);
+    this.setState({ converted: conv });
+    const preview = document.querySelector(".preview-archive");
 
     while (preview.firstChild) {
       preview.removeChild(preview.firstChild);
@@ -143,15 +154,15 @@ class Form extends Component {
       const list = document.createElement("ol");
       preview.appendChild(list);
       for (const file of curFiles) {
-        list.appendChild(this.createNodeForArchieve(file));
+        list.appendChild(this.createNodeForArchive(file));
       }
       this.setState({
-        archieves: event.target.files,
+        archives: event.target.files,
       });
     }
 
-    for (let archieve of event.target.files) {
-      this.extractFile(archieve);
+    for (let archive of event.target.files) {
+      this.extractFile(archive);
     }
   };
 
@@ -173,6 +184,8 @@ class Form extends Component {
   }
 
   imageSelectedHandler = async (event) => {
+    let conv = this.state.converted.filter((e) => e.isZipped);
+    this.setState({ converted: conv });
     const preview = document.querySelector(".preview-image");
 
     while (preview.firstChild) {
@@ -193,36 +206,18 @@ class Form extends Component {
         list.appendChild(this.createNodeForImage(file));
       }
     }
-    this.state.images.push(event.target.files);
 
     for (let f of event.target.files) {
       let base = await this.convertToBase64(f);
-      this.appendEncodedImage(base, f.name);
+      this.appendEncodedImage(base, f.name, false);
     }
   };
-  makeGray(img) {
-    for (var pixel of img.values()) {
-      var avg = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
-      pixel.setRed(avg);
-      pixel.setGreen(avg);
-      pixel.setBlue(avg);
-    }
-    return img;
-  }
-  transformImage(base) {
-    var img = new Image();
-    img.src = "";
-    img.width = "28";
-    img.height = "28";
-    console.log(img);
-    return this.convertToBase64(img);
-  }
 
-  appendEncodedImage(base, filename) {
-    if (base.indexOf(",") !== -1) base = base.split(",")[1];
+  appendEncodedImage(base, filename, isZipped) {
     let model = {
       name: filename,
       encoded: base,
+      isZipped: isZipped,
     };
     this.state.converted.push(model);
   }
@@ -234,26 +229,59 @@ class Form extends Component {
       reader.onerror = (error) => reject(error);
     });
 
+  clearImages() {
+    let preview = document.querySelector(".preview-image");
+    if (!preview) return;
+    const para = document.createElement("p");
+    para.textContent = "No files currently selected for upload";
+    var child = preview.lastElementChild;
+    while (child) {
+      preview.removeChild(child);
+      child = preview.lastElementChild;
+    }
+    preview.appendChild(para);
+    let conv = this.state.converted.filter((e) => e.isZipped);
+    this.setState({ converted: conv });
+  }
+
+  clearArchives() {
+    const preview = document.querySelector(".preview-archive");
+    if (!preview) return;
+    const para = document.createElement("p");
+    para.textContent = "No files currently selected for upload";
+    var child = preview.lastElementChild;
+    while (child) {
+      preview.removeChild(child);
+      child = preview.lastElementChild;
+    }
+    preview.appendChild(para);
+    let conv = this.state.converted.filter((e) => !e.isZipped);
+    this.setState({ converted: conv });
+  }
   render() {
     return (
       <>
+        <button onClick={this.clearArchives}>Clear</button>
+
         <div className="upload">
           <div>
-            <label htmlFor="archieve_uploads">Choose archives to upload</label>
+            <label htmlFor="archive_uploads">Choose archives to upload</label>
             <input
-              className="input-file input-archieve"
+              className="input-file input-archive"
               type="file"
-              id="archieve_uploads"
-              name="archieve_uploads"
+              id="archive_uploads"
+              name="archive_uploads"
               accept=".zip"
-              onChange={this.archieveSelectedHandler}
+              onChange={this.archiveSelectedHandler}
               multiple
             />
           </div>
-          <div className="preview-archieve">
+          <div className="preview-archive">
             <p>No archives currently selected for upload</p>
           </div>
         </div>
+        <button onClick={this.clearImages}>Clear</button>
+
         <div className="upload">
           <div>
             <label htmlFor="image_uploads">
@@ -282,10 +310,10 @@ class Form extends Component {
           <Answer
             ref={this.popup}
             closePopup={this.togglePopup}
-            responses={this.state.respones}
+            responses={this.state.responses}
           />
         ) : null}
-        <LastResult result={this.state.lastResult} />
+        <LastResult responses={this.state.responses} />
       </>
     );
   }

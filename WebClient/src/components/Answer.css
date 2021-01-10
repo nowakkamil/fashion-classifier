@@ -1,5 +1,5 @@
 .answer {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -20,6 +20,15 @@
   border-radius: 10px;
   min-height: 23em;
   min-width: 35em;
+  overflow-y: auto;
+  height: 60vh;
+}
+
+.answer-text {
+  width: 100%;
+  padding: 5%;
+  text-align: center;
+  font-size: calc(12px + 0.8vmin);
 }
 
 .button-answer {
@@ -46,11 +55,4 @@
 
 .success {
   fill: #0cc70c;
-}
-
-.answer-text {
-  width: 100%;
-  padding: 5%;
-  text-align: center;
-  font-size: calc(12px + 0.8vmin);
 }
