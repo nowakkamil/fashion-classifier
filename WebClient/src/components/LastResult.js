@@ -3,21 +3,25 @@ import "./Form.css";
 import "./LastResult.css";
 class LastResult extends Component {
   render() {
-    const result = this.props.result;
+    const responses = this.props.responses;
     return (
       <div className="upload">
-        {result.length >= 2 ? (
-          <ul>
-            <li>
-              <p className="p-result">{result[1].result}</p>
-              <img
-                src={URL.createObjectURL(result[0])}
-                alt={result[1].name}
-                className="img-result"
-              ></img>
-            </li>
-          </ul>
-        ) : null}
+        <ul>
+          {responses.map((value, key) => {
+            return (
+              <li key={key}>
+                <p className="p-result">
+                  {value.name} with result {value.result}
+                </p>
+                <img
+                  src={value.encoded}
+                  alt={value.name}
+                  className="img-result"
+                ></img>{" "}
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
