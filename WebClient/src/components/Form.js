@@ -77,7 +77,7 @@ class Form extends Component {
     }
     this.setState({ responses: responsesFromServer });
     this.togglePopup();
-    this.setState({ isLoading: false, images: [], converted: [] });
+    this.setState({ isLoading: false });
   };
 
   removeHeader(base) {
@@ -304,8 +304,8 @@ class Form extends Component {
         {this.state.isLoading ? (
           <Loader type="Puff" color="#00BFFF" height={100} width={100} />
         ) : (
-          <CustomButton handler={this.handleButtonClick} text="Send" />
-        )}
+            <CustomButton handler={this.handleButtonClick} text="Send" />
+          )}
         {this.state.showPopup ? (
           <Answer
             ref={this.popup}
