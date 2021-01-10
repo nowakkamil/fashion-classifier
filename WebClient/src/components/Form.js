@@ -5,7 +5,7 @@ import axios from "axios";
 import Loader from "react-loader-spinner";
 import Answer from "./Answer";
 import LastResult from "./LastResult";
-
+import jsZip from "jszip";
 const postAddress = "http://127.0.0.1:5000/";
 
 class Form extends Component {
@@ -103,8 +103,7 @@ class Form extends Component {
   }
 
   extractFile(file) {
-    const new_zip = require("jszip")();
-    new_zip.loadAsync(file).then((zip) => {
+    jsZip.loadAsync(file).then((zip) => {
       for (let i in zip.files) {
         zip.files[i].async("base64").then(
           (content) => {
@@ -232,34 +231,32 @@ class Form extends Component {
 
   clearImages() {
     let preview = document.querySelector(".preview-image");
-    if (preview) {
-      const para = document.createElement("p");
-      para.textContent = "No files currently selected for upload";
-      var child = preview.lastElementChild;
-      while (child) {
-        preview.removeChild(child);
-        child = preview.lastElementChild;
-      }
-      preview.appendChild(para);
-      let conv = this.state.converted.filter((e) => e.isZipped);
-      this.setState({ converted: conv });
+    if (!preview) return;
+    const para = document.createElement("p");
+    para.textContent = "No files currently selected for upload";
+    var child = preview.lastElementChild;
+    while (child) {
+      preview.removeChild(child);
+      child = preview.lastElementChild;
     }
+    preview.appendChild(para);
+    let conv = this.state.converted.filter((e) => e.isZipped);
+    this.setState({ converted: conv });
   }
 
   clearArchives() {
     const preview = document.querySelector(".preview-archive");
-    if (preview) {
-      const para = document.createElement("p");
-      para.textContent = "No files currently selected for upload";
-      var child = preview.lastElementChild;
-      while (child) {
-        preview.removeChild(child);
-        child = preview.lastElementChild;
-      }
-      preview.appendChild(para);
-      let conv = this.state.converted.filter((e) => !e.isZipped);
-      this.setState({ converted: conv });
+    if (!preview) return;
+    const para = document.createElement("p");
+    para.textContent = "No files currently selected for upload";
+    var child = preview.lastElementChild;
+    while (child) {
+      preview.removeChild(child);
+      child = preview.lastElementChild;
     }
+    preview.appendChild(para);
+    let conv = this.state.converted.filter((e) => !e.isZipped);
+    this.setState({ converted: conv });
   }
   render() {
     return (

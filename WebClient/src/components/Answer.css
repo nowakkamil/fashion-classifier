@@ -20,6 +20,8 @@
   border-radius: 10px;
   min-height: 23em;
   min-width: 35em;
+  overflow-y: auto;
+  height: 60vh;
 }
 
 .answer-text {
