@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../_img/money.jpg";
+import logo from "../_img/fashion.jpg";
 import hexagon from "../_img/hexagon.png";
 import "./NavBar.css";
 
