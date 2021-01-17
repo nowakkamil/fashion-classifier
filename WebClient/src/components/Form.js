@@ -18,6 +18,7 @@ class Form extends Component {
         "image/apng",
         "image/bmp",
         "image/gif",
+        "image/jpg",
         "image/jpeg",
         "image/pjpeg",
         "image/png",
@@ -107,6 +108,7 @@ class Form extends Component {
       for (let i in zip.files) {
         zip.files[i].async("base64").then(
           (content) => {
+            console.log(zip.files[i].name.split(".")[1]);
             if (this.validArchiveImageType(i)) {
               content =
                 "data:image/" +
@@ -242,6 +244,7 @@ class Form extends Component {
     preview.appendChild(para);
     let conv = this.state.converted.filter((e) => e.isZipped);
     this.setState({ converted: conv });
+    document.querySelector("#image_uploads").value = "";
   }
 
   clearArchives() {
@@ -257,7 +260,9 @@ class Form extends Component {
     preview.appendChild(para);
     let conv = this.state.converted.filter((e) => !e.isZipped);
     this.setState({ converted: conv });
+    document.querySelector("#archive_uploads").value = "";
   }
+
   render() {
     return (
       <>
@@ -304,8 +309,8 @@ class Form extends Component {
         {this.state.isLoading ? (
           <Loader type="Puff" color="#00BFFF" height={100} width={100} />
         ) : (
-            <CustomButton handler={this.handleButtonClick} text="Send" />
-          )}
+          <CustomButton handler={this.handleButtonClick} text="Send" />
+        )}
         {this.state.showPopup ? (
           <Answer
             ref={this.popup}
