@@ -1,4 +1,5 @@
 import "./App.css";
+import "antd/dist/antd.css";
 import React from "react";
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";

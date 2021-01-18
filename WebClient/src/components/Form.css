@@ -4,15 +4,48 @@
   margin: 0 auto;
 }
 label {
-  display: block;
-  margin: 0 auto;
-  text-align: center;
+  margin: 10%;
+  width: 80%;
+  height: 40px;
 }
 .upload {
-  width: 600px;
+  position: relative;
+  height: 25vh;
+  width: 28vw;
   margin: 20px auto;
   padding: 20px;
-  border: 1px solid black;
+}
+
+.upload-button {
+  width: 80%;
+  margin: 0;
+}
+
+.erase-button {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.send-button{
+  transform: scale(1.6);
+}
+
+.upload-main {
+  display: flex;
+}
+
+.upload-icon-wrapper {
+  top: 4vw !important;
+  left: 2vw !important;
+}
+
+.upload-icon-wrapper,
+.upload-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .upload ol {
@@ -28,7 +61,6 @@ div > p {
 }
 
 .upload img {
-  height: 64px;
   order: 1;
 }
 
@@ -36,28 +68,6 @@ div > p {
   line-height: 32px;
   padding-left: 10px;
   text-align: center;
-}
-
-.upload label,
-.upload button {
-  background-color: #7f9ccb;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px ridge black;
-  font-size: 0.8rem;
-  height: auto;
-}
-
-.upload label:hover,
-.upload button:hover {
-  background-color: #2d5ba3;
-  color: white;
-}
-
-.upload label:active,
-.upload button:active {
-  background-color: #0d3f8f;
-  color: white;
 }
 
 li > img {

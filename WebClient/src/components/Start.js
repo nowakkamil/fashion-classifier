@@ -24,9 +24,6 @@ class Start extends Component {
       <div className="intro">
         {" "}
         <React.Fragment>
-          <p className="intro-text">Welcome to</p>
-          <p className="intro-text">Fashion classifier</p>
-          <br />
           <Form />
           <button className="popup" onClick={this.togglePopup}>
             i

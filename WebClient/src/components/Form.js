@@ -6,6 +6,9 @@ import Loader from "react-loader-spinner";
 import Answer from "./Answer";
 import LastResult from "./LastResult";
 import jsZip from "jszip";
+import { Button } from 'antd';
+import { FileZipOutlined, FileImageOutlined, DeleteOutlined, UploadOutlined, SendOutlined } from '@ant-design/icons';
+import { Empty, Spin } from 'antd';
 const postAddress = "http://127.0.0.1:5000/";
 
 class Form extends Component {
@@ -128,7 +131,7 @@ class Form extends Component {
     const listItem = document.createElement("li");
     const para = document.createElement("p");
     if (this.validArchiveType(file)) {
-      para.textContent = `File name ${file.name}`;
+      para.textContent = file.name;
       listItem.appendChild(para);
     } else {
       para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
@@ -170,7 +173,7 @@ class Form extends Component {
     const listItem = document.createElement("li");
     const para = document.createElement("p");
     if (this.validImageType(file)) {
-      para.textContent = `File name ${file.name}`;
+      para.textContent = file.name;
       const image = document.createElement("img");
       image.src = URL.createObjectURL(file);
 
@@ -258,53 +261,76 @@ class Form extends Component {
     let conv = this.state.converted.filter((e) => !e.isZipped);
     this.setState({ converted: conv });
   }
+
+  clickParentLabel = e => e.target.parentNode.parentElement.click();
+
   render() {
     return (
       <>
-        <button onClick={this.clearArchives}>Clear</button>
-
-        <div className="upload">
-          <div>
-            <label htmlFor="archive_uploads">Choose archives to upload</label>
-            <input
-              className="input-file input-archive"
-              type="file"
-              id="archive_uploads"
-              name="archive_uploads"
-              accept=".zip"
-              onChange={this.archiveSelectedHandler}
-              multiple
-            />
+        <div className="upload-main">
+          <div className="upload">
+            <div className="upload-icon-wrapper">
+              <FileZipOutlined style={{ fontSize: '24vw', color: '#272727' }} />
+            </div>
+            <div className="upload-content">
+              <label htmlFor="archive_uploads">
+                <Button className="upload-button" type="primary" icon={<UploadOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clickParentLabel}>
+                  Upload archive(s)
+                </Button>
+                <input
+                  className="input-file input-archive"
+                  type="file"
+                  id="archive_uploads"
+                  name="archive_uploads"
+                  accept=".zip"
+                  onChange={this.archiveSelectedHandler}
+                  multiple
+                />
+              </label>
+              {this.state.archives.length ? (
+                <Button className="erase-button" type="primary" danger icon={<DeleteOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clearArchives}>
+                  Erase
+                </Button>
+              ) : null}
+              <div className="preview-archive">
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </div>
+            </div>
           </div>
-          <div className="preview-archive">
-            <p>No archives currently selected for upload</p>
-          </div>
-        </div>
-        <button onClick={this.clearImages}>Clear</button>
-
-        <div className="upload">
-          <div>
-            <label htmlFor="image_uploads">
-              Choose images to upload (PNG, JPG)
-            </label>
-            <input
-              className="input-file input-image"
-              type="file"
-              id="image_uploads"
-              name="image_uploads"
-              accept=".jpg, .jpeg, .png"
-              onChange={this.imageSelectedHandler}
-              multiple
-            />
-          </div>
-          <div className="preview-image">
-            <p>No files currently selected for upload</p>
+          <div className="upload">
+            <div className="upload-icon-wrapper">
+              <FileImageOutlined style={{ fontSize: '24vw', color: '#272727' }} />
+            </div>
+            <div className="upload-content">
+              <label htmlFor="image_uploads">
+                <Button className="upload-button" type="primary" icon={<UploadOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clickParentLabel}>
+                  Upload images (PNG / JPG)
+                </Button>
+              </label>
+              <input
+                className="input-file input-image"
+                type="file"
+                id="image_uploads"
+                name="image_uploads"
+                accept=".jpg, .jpeg, .png"
+                onChange={this.imageSelectedHandler}
+                multiple
+              />
+              {this.state.converted.length ? (
+                <Button className="erase-button" type="primary" danger icon={<DeleteOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clearImages}>
+                  Erase
+                </Button>
+              ) : null}
+              <div className="preview-image" style={{ marginTop: '55px' /* TODO: fix*/ }}>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </div>
+            </div>
           </div>
         </div>
         {this.state.isLoading ? (
-          <Loader type="Puff" color="#00BFFF" height={100} width={100} />
+          <Spin className="send-button" size="large" />
         ) : (
-            <CustomButton handler={this.handleButtonClick} text="Send" />
+            <Button className="send-button" type="primary" shape="circle" icon={<SendOutlined />} size="large" onClick={this.handleButtonClick} />
           )}
         {this.state.showPopup ? (
           <Answer

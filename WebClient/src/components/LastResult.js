@@ -4,8 +4,16 @@ import "./LastResult.css";
 class LastResult extends Component {
   render() {
     const responses = this.props.responses;
+
+    if (!responses.length) {
+      return null;
+    }
+
     return (
-      <div className="upload">
+      <div className="upload last-results">
+        <p className="last-results-text">
+          Last results
+        </p>
         <ul>
           {responses.map((value, key) => {
             return (
