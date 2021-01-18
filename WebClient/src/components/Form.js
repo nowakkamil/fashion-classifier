@@ -1,13 +1,17 @@
 import React, { Component } from "react";
-import CustomButton from "./CustomButton";
 import "./Form.css";
 import axios from "axios";
-import Loader from "react-loader-spinner";
 import Answer from "./Answer";
 import LastResult from "./LastResult";
 import jsZip from "jszip";
-import { FileZipOutlined, FileImageOutlined, DeleteOutlined, UploadOutlined, SendOutlined } from '@ant-design/icons';
-import { Empty, Spin, Button } from 'antd';
+import {
+  FileZipOutlined,
+  FileImageOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
+import { Empty, Spin, Button } from "antd";
 const postAddress = "http://127.0.0.1:5000/";
 
 class Form extends Component {
@@ -223,7 +227,10 @@ class Form extends Component {
       encoded: base,
       isZipped: isZipped,
     };
-    this.state.converted.push(model);
+
+    let conv = this.state.converted;
+    conv.push(model);
+    this.setState({ converted: conv });
   }
   convertToBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -265,7 +272,7 @@ class Form extends Component {
     document.querySelector("#archive_uploads").value = "";
   }
 
-  clickParentLabel = e => e.target.parentNode.parentElement.click();
+  clickParentLabel = (e) => e.target.parentNode.parentElement.click();
 
   render() {
     return (
@@ -273,11 +280,18 @@ class Form extends Component {
         <div className="upload-main">
           <div className="upload">
             <div className="upload-icon-wrapper">
-              <FileZipOutlined style={{ fontSize: '24vw', color: '#272727' }} />
+              <FileZipOutlined style={{ fontSize: "24vw", color: "#272727" }} />
             </div>
             <div className="upload-content">
               <label htmlFor="archive_uploads">
-                <Button className="upload-button" type="primary" icon={<UploadOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clickParentLabel}>
+                <Button
+                  className="upload-button"
+                  type="primary"
+                  icon={<UploadOutlined style={{ fontSize: "20px" }} />}
+                  shape="round"
+                  size="large"
+                  onClick={this.clickParentLabel}
+                >
                   Upload archive(s)
                 </Button>
                 <input
@@ -291,7 +305,15 @@ class Form extends Component {
                 />
               </label>
               {this.state.archives.length ? (
-                <Button className="erase-button" type="primary" danger icon={<DeleteOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clearArchives}>
+                <Button
+                  className="erase-button"
+                  type="primary"
+                  danger
+                  icon={<DeleteOutlined style={{ fontSize: "20px" }} />}
+                  shape="round"
+                  size="large"
+                  onClick={this.clearArchives}
+                >
                   Erase
                 </Button>
               ) : null}
@@ -302,11 +324,20 @@ class Form extends Component {
           </div>
           <div className="upload">
             <div className="upload-icon-wrapper">
-              <FileImageOutlined style={{ fontSize: '24vw', color: '#272727' }} />
+              <FileImageOutlined
+                style={{ fontSize: "24vw", color: "#272727" }}
+              />
             </div>
             <div className="upload-content">
               <label htmlFor="image_uploads">
-                <Button className="upload-button" type="primary" icon={<UploadOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clickParentLabel}>
+                <Button
+                  className="upload-button"
+                  type="primary"
+                  icon={<UploadOutlined style={{ fontSize: "20px" }} />}
+                  shape="round"
+                  size="large"
+                  onClick={this.clickParentLabel}
+                >
                   Upload images (PNG / JPG)
                 </Button>
               </label>
@@ -319,12 +350,23 @@ class Form extends Component {
                 onChange={this.imageSelectedHandler}
                 multiple
               />
-              {this.state.converted.length ? (
-                <Button className="erase-button" type="primary" danger icon={<DeleteOutlined style={{ fontSize: '20px' }} />} shape="round" size="large" onClick={this.clearImages}>
+              {this.state.converted.filter((e) => !e.isZipped).length ? (
+                <Button
+                  className="erase-button"
+                  type="primary"
+                  danger
+                  icon={<DeleteOutlined style={{ fontSize: "20px" }} />}
+                  shape="round"
+                  size="large"
+                  onClick={this.clearImages}
+                >
                   Erase
                 </Button>
               ) : null}
-              <div className="preview-image" style={{ marginTop: '55px' /* TODO: fix*/ }}>
+              <div
+                className="preview-image"
+                style={{ marginTop: "55px" /* TODO: fix*/ }}
+              >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </div>
             </div>
@@ -333,7 +375,14 @@ class Form extends Component {
         {this.state.isLoading ? (
           <Spin className="send-button" size="large" />
         ) : (
-            <Button className="send-button" type="primary" shape="circle" icon={<SendOutlined />} size="large" onClick={this.handleButtonClick} />
+          <Button
+            className="send-button"
+            type="primary"
+            shape="circle"
+            icon={<SendOutlined />}
+            size="large"
+            onClick={this.handleButtonClick}
+          />
         )}
         {this.state.showPopup ? (
           <Answer
