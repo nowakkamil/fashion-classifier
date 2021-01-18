@@ -58,6 +58,7 @@ div > p {
   justify-content: space-between;
   margin-bottom: 10px;
   list-style-type: none;
+  width: 80%;
 }
 
 .upload img {

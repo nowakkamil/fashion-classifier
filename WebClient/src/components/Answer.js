@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Answer.css";
-import Button from "@material-ui/core/Button";
+import { Button } from 'antd';
 
 class Answer extends Component {
   render() {
@@ -8,30 +8,31 @@ class Answer extends Component {
     return (
       <div className="answer">
         <div className="answer-inner">
-          <ul>
-            {responses.map((value, key) => {
-              return (
-                <li key={key}>
-                  <p className="p-result">
-                    {value.name} with result {value.result}
-                  </p>
-                  <img
-                    src={value.encoded}
-                    alt={value.name}
-                    className="img-result"
-                  ></img>{" "}
-                </li>
-              );
-            })}
-          </ul>
+          <div className="upload">
+            <ul>
+              {responses.map((value, key) => {
+                return (
+                  <li key={key}>
+                    <p className="p-result">
+                      {value.name} with result {value.result}
+                    </p>
+                    <img
+                      src={value.encoded}
+                      alt={value.name}
+                      className="img-result"
+                    ></img>{" "}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
           <Button
             className="button button-answer"
-            color="primary"
-            variant="contained"
+            type="primary"
             size="large"
             onClick={this.props.closePopup}
           >
-            Close
+            Return
           </Button>
         </div>
       </div>

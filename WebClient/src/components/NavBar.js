@@ -8,7 +8,7 @@ const NavBar = () => (
     <header className="wrapper">
       <figure className="app-header">
         <img src={logo} alt="logo" className="nav-bar" />
-        <figcaption className="nav-bar-text">Fashion classifier</figcaption>
+        <figcaption className="nav-bar-text">Fashion Classifier</figcaption>
       </figure>
       <figure className="hexagon-wrapper last-item">
         <img src={hexagon} alt="logo" className="hexagon" />

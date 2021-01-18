@@ -1,21 +1,34 @@
 import React, { Component } from "react";
 import "./Instruction.css";
-import Button from "@material-ui/core/Button";
+import { Button } from 'antd';
 
 class Instruction extends Component {
   render() {
     return (
       <div className="instruction">
         <div className="instruction-inner">
-          <p className="instruction-text">Instruction</p>
+          <p className="instruction-text">Manual</p>
+          <ol className="instruction-bullet-points">
+            <li>
+              Choose images you want to classify
+              </li>
+            <li>
+              If they are zipped click the button "Choose archives to upload", else click "Choose images to upload"
+              </li>
+            <li>
+              After files submission, click send
+              </li>
+            <li>
+              Wait for results, they will be displayed in a pop-up
+              </li>
+          </ol>
           <Button
-            className="button button-instruction"
-            color="primary"
-            variant="contained"
+            className="button button-answer"
+            type="primary"
             size="large"
             onClick={this.props.closePopup}
           >
-            Close
+            Return
           </Button>
         </div>
       </div>

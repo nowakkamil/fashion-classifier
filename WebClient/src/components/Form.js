@@ -6,9 +6,8 @@ import Loader from "react-loader-spinner";
 import Answer from "./Answer";
 import LastResult from "./LastResult";
 import jsZip from "jszip";
-import { Button } from 'antd';
 import { FileZipOutlined, FileImageOutlined, DeleteOutlined, UploadOutlined, SendOutlined } from '@ant-design/icons';
-import { Empty, Spin } from 'antd';
+import { Empty, Spin, Button } from 'antd';
 const postAddress = "http://127.0.0.1:5000/";
 
 class Form extends Component {

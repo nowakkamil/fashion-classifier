@@ -50,9 +50,17 @@
 
 .instruction-text {
   width: 100%;
-  padding: 5%;
+  padding: 4%;
+  padding-bottom: 1%;
   text-align: center;
-  font-size: calc(12px + 0.8vmin);
+  margin-left: 40px;
+  font-size: calc(20px + 0.8vmin);
+}
+
+.instruction-bullet-points {
+  width: 80%;
+  margin: 0 auto;
+  font-size: 1.3em;
 }
 
 .popup {
@@ -61,11 +69,9 @@
   right: 30px;
   z-index: 1;
   text-align: center;
-  color: black;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  background-color: white;
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;
