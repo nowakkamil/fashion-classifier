@@ -7,3 +7,5 @@ A web-based solution that enables the user to categorise various pieces of cloth
 Please feel free to read the following documents explaining each component:
 
 * [Server](WebServer/README.md) - A flask server
+* [Client](WebClient/README.md) - A react application
+* [Model](Model/README.md) - A convolutional neural network machine learning model
