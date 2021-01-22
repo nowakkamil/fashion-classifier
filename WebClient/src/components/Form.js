@@ -150,15 +150,8 @@ class Form extends Component {
     this.setState({ converted: conv });
     const preview = document.querySelector(".preview-archive");
 
-    while (preview.firstChild) {
-      preview.removeChild(preview.firstChild);
-    }
     const curFiles = event.target.files;
-    if (curFiles.length === 0) {
-      const para = document.createElement("p");
-      para.textContent = "No files currently selected for upload";
-      preview.appendChild(para);
-    } else {
+    if (curFiles.length !== 0) {
       const list = document.createElement("ol");
       preview.appendChild(list);
       for (const file of curFiles) {
@@ -168,7 +161,6 @@ class Form extends Component {
         archives: event.target.files,
       });
     }
-
     for (let archive of event.target.files) {
       this.extractFile(archive);
     }
@@ -195,26 +187,14 @@ class Form extends Component {
     let conv = this.state.converted.filter((e) => e.isZipped);
     this.setState({ converted: conv });
     const preview = document.querySelector(".preview-image");
-
-    while (preview.firstChild) {
-      preview.removeChild(preview.firstChild);
-    }
-
     const curFiles = event.target.files;
-
-    if (curFiles.length === 0) {
-      const para = document.createElement("p");
-      para.textContent = "No files currently selected for upload";
-      preview.appendChild(para);
-    } else {
+    if (curFiles.length !== 0) {
       const list = document.createElement("ol");
       preview.appendChild(list);
-
       for (const file of curFiles) {
         list.appendChild(this.createNodeForImage(file));
       }
     }
-
     for (let f of event.target.files) {
       let base = await this.convertToBase64(f);
       this.appendEncodedImage(base, f.name, false);
@@ -243,14 +223,11 @@ class Form extends Component {
   clearImages() {
     let preview = document.querySelector(".preview-image");
     if (!preview) return;
-    const para = document.createElement("p");
-    para.textContent = "No files currently selected for upload";
     var child = preview.lastElementChild;
     while (child) {
       preview.removeChild(child);
       child = preview.lastElementChild;
     }
-    preview.appendChild(para);
     let conv = this.state.converted.filter((e) => e.isZipped);
     this.setState({ converted: conv });
     document.querySelector("#image_uploads").value = "";
@@ -259,14 +236,12 @@ class Form extends Component {
   clearArchives() {
     const preview = document.querySelector(".preview-archive");
     if (!preview) return;
-    const para = document.createElement("p");
-    para.textContent = "No files currently selected for upload";
+
     var child = preview.lastElementChild;
     while (child) {
       preview.removeChild(child);
       child = preview.lastElementChild;
     }
-    preview.appendChild(para);
     let conv = this.state.converted.filter((e) => !e.isZipped);
     this.setState({ converted: conv });
     document.querySelector("#archive_uploads").value = "";
@@ -318,7 +293,9 @@ class Form extends Component {
                 </Button>
               ) : null}
               <div className="preview-archive">
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                {this.state.archives.length ? null : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
               </div>
             </div>
           </div>
@@ -367,7 +344,10 @@ class Form extends Component {
                 className="preview-image"
                 style={{ marginTop: "55px" /* TODO: fix*/ }}
               >
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                {this.state.converted.filter((e) => !e.isZipped)
+                  .length ? null : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
               </div>
             </div>
           </div>
@@ -381,6 +361,7 @@ class Form extends Component {
             shape="circle"
             icon={<SendOutlined />}
             size="large"
+            disabled={!this.state.converted.length}
             onClick={this.handleButtonClick}
           />
         )}
